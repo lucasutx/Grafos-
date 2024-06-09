@@ -9,20 +9,20 @@ class Program
         // Escolha do Algoritmo 
         Console.WriteLine("Digite o Algoritmo desejado:\n" +
      "1. Busca em Profundidade\n" +
-     "2. Busca em Largura (D)\n" +
-     "3. Algoritmo de Dijkstra (D)\n" +
-     "4. Algoritmo de Jarník-Prim (G)\n" +
-     "5. Ordenação Topológica (D)\n" +
-     "6. Algoritmo de Kruskal (G)\n" +
-     "7. Algoritmo de Fleury (G)\n" +
-     "8. Algoritmo de König-Egerváry (G)\n" +
-     "9. Algoritmo Guloso de Coloração (G)\n" +
-     "10. Algoritmo de Welsh-Powell (G)\n" +
-     "11. Algoritmo de Brélaz (G)\n" +
-     "12. Algoritmo de Kosaraju (D)\n" +
-     "13. Algoritmo de Kahn (D)\n" +
-     "14. Algoritmo de Bellman-Ford (D)\n" +
-     "15. Algoritmo de Ford-Fulkerson (D)");
+     "2. Busca em Largura \n" +
+     "3. Algoritmo de Dijkstra \n" +
+     "4. Algoritmo de Jarník-Prim \n" +
+     "5. Ordenação Topológica \n" +
+     "6. Algoritmo de Kruskal \n" +
+     "7. Algoritmo de Fleury \n" +
+     "8. Algoritmo de König-Egerváry \n" +
+     "9. Algoritmo Guloso de Coloração \n" +
+     "10. Algoritmo de Welsh-Powell \n" +
+     "11. Algoritmo de Brélaz \n" +
+     "12. Algoritmo de Kosaraju \n" +
+     "13. Algoritmo de Kahn \n" +
+     "14. Algoritmo de Bellman-Ford \n" +
+     "15. Algoritmo de Ford-Fulkerson ");
 
 
 
