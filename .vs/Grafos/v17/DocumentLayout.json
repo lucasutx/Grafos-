@@ -1,0 +1,55 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\lucas.bitencourt\\Desktop\\AlgoritmosGrafos\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4C8C663E-C8D2-4AAE-8A7C-9C2D913EC7B6}|Grafos\\Grafos.csproj|c:\\users\\lucas.bitencourt\\desktop\\algoritmosgrafos\\grafos\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4C8C663E-C8D2-4AAE-8A7C-9C2D913EC7B6}|Grafos\\Grafos.csproj|solutionrelative:grafos\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4C8C663E-C8D2-4AAE-8A7C-9C2D913EC7B6}|Grafos\\Grafos.csproj|c:\\users\\lucas.bitencourt\\desktop\\algoritmosgrafos\\grafos\\grafo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4C8C663E-C8D2-4AAE-8A7C-9C2D913EC7B6}|Grafos\\Grafos.csproj|solutionrelative:grafos\\grafo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Grafo.cs",
+              "DocumentMoniker": "C:\\Users\\lucas.bitencourt\\Desktop\\AlgoritmosGrafos\\Grafos\\Grafo.cs",
+              "RelativeDocumentMoniker": "Grafos\\Grafo.cs",
+              "ToolTip": "C:\\Users\\lucas.bitencourt\\Desktop\\AlgoritmosGrafos\\Grafos\\Grafo.cs",
+              "RelativeToolTip": "Grafos\\Grafo.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-31T10:49:11.396Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\lucas.bitencourt\\Desktop\\AlgoritmosGrafos\\Grafos\\Program.cs",
+              "RelativeDocumentMoniker": "Grafos\\Program.cs",
+              "ToolTip": "C:\\Users\\lucas.bitencourt\\Desktop\\AlgoritmosGrafos\\Grafos\\Program.cs",
+              "RelativeToolTip": "Grafos\\Program.cs",
+              "ViewState": "AQIAADMAAAAAAAAAAAAAAD4AAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-31T10:48:43.925Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
