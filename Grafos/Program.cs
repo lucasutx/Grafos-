@@ -1,5 +1,3 @@
-
-
 using System;
 class Program
 {
@@ -37,32 +35,45 @@ class Program
         int NumVertices = int.Parse(numVA[0]);
         int NumArestas = int.Parse(numVA[1]);
 
+        // Criação do grafo
+        List<int>[] grafo = new List<int>[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            grafo[i] = new List<int>();
+        }
 
-        // Construção do grafo
-        Grafo grafo = new Grafo(NumVertices);
+        // Leitura das arestas
+        Console.WriteLine("Insira as arestas no formato 'origem destino'");
+        for (int i = 0; i < NumArestas; i++)
+        {
+            string[] aresta = Console.ReadLine().Split(' ');
+            int origem = int.Parse(aresta[0]);
+            int destino = int.Parse(aresta[1]);
+            grafo[origem].Add(destino);
 
-
-      
-
-
-
-        switch (algoritmo) 
+           /* // Se o algoritmo requer grafo não direcionado, adicionamos também a aresta inversa
+            if (algoritmo == 4 || algoritmo == 6 || algoritmo == 7 || algoritmo == 9 || algoritmo == 10 || algoritmo == 11)
+            {
+                grafo[destino].Add(origem);
+            }*/
+        }
+        switch (algoritmo)
         {
             case 1:
-                BuscaProfundidade();
+                BuscaProfundidade(grafo);
                 break;
 
             case 2:
-                BuscaLargura();
+
                 break;
 
             case 3:
-                AlgoritmoDijkstra();
+
 
                 break;
 
             case 4:
-                
+
                 break;
 
             case 5: break;
@@ -92,165 +103,32 @@ class Program
                 Console.WriteLine("Insira um Algoritmo válido");
                 break;
 
-
         }
 
-
-       
-
-        void BuscaProfundidade()
-
+        static void BuscaProfundidade(List<int>[] grafo)
         {
-
-            //Armazenamento dos Dados
-
-
-            for (int i = 0; i < NumArestas; i++)
+            bool[] visitados = new bool[grafo.Length];
+            for (int i = 0; i < grafo.Length; i++)
             {
-                string[] linha = Console.ReadLine().Split(' ');
-                int origem = int.Parse(linha[0]);
-                int destino = int.Parse(linha[1]);
-                grafo.AdicionarAresta(origem, destino);
-
-            }
-            Console.WriteLine("Resultado da busca em profundidade (DFS):");
-            bool[] visitado = new bool[NumVertices];
-            for (int i = 0; i < NumVertices; i++)
-            {
-                if (!visitado[i])
+                if (!visitados[i])
                 {
-                    DFS(i, grafo, visitado);
-                }
-            }
-            void DFS(int vertice, Grafo grafo, bool[] visitado)
-            {
-                visitado[vertice] = true;
-                Console.Write(vertice + " ");
-
-                foreach (int adjacente in grafo.GetAdjacentes(vertice))
-                {
-                    if (!visitado[adjacente])
-                    {
-                        DFS(adjacente, grafo, visitado);
-                    }
+                    DFS(grafo, i, visitados);
                 }
             }
         }
 
-        void BuscaLargura()
+        static void DFS(List<int>[] grafo, int v, bool[] visitados)
         {
-            // Armazenamento dos Dados
-            for (int i = 0; i < NumArestas; i++)
+            visitados[v] = true;
+            Console.WriteLine("Visitado vértice: " + v);
+
+            foreach (var adj in grafo[v])
             {
-                string[] linha = Console.ReadLine().Split(' ');
-                int origem = int.Parse(linha[0]);
-                int destino = int.Parse(linha[1]);
-                grafo.AdicionarAresta(origem, destino);
-            }
-
-            Console.WriteLine("Resultado da busca em largura (BFS):");
-
-            // Array para marcar os vértices visitados
-            bool[] visitado = new bool[NumVertices];
-
-            // Fila para armazenar os vértices a serem visitados
-            Queue<int> fila = new Queue<int>();
-
-            for (int i = 0; i < NumVertices; i++)
-            {
-                if (!visitado[i])
+                if (!visitados[adj])
                 {
-                    BFS(i, grafo, visitado, fila);
+                    DFS(grafo, adj, visitados);
                 }
             }
-
-            void BFS(int vertice, Grafo grafo, bool[] visitado, Queue<int> fila)
-            {
-                visitado[vertice] = true;
-                fila.Enqueue(vertice);
-
-                while (fila.Count > 0)
-                {
-                    int atual = fila.Dequeue();
-                    Console.Write(atual + " ");
-
-                    foreach (int adjacente in grafo.GetAdjacentes(atual))
-                    {
-                        if (!visitado[adjacente])
-                        {
-                            visitado[adjacente] = true;
-                            fila.Enqueue(adjacente);
-                        }
-                    }
-                }
-            }
-
-
-        }
-
-        void AlgoritmoDijkstra()
-        {
-            // Solicitar o vértice de origem
-            Console.WriteLine("Digite o vértice de origem:");
-            int origem = int.Parse(Console.ReadLine());
-
-            // Array para armazenar as distâncias mínimas
-            int[] distancias = new int[NumVertices];
-            Array.Fill(distancias, int.MaxValue);
-            distancias[origem] = 0;
-
-            // Conjunto de vértices visitados
-            HashSet<int> visitados = new HashSet<int>();
-
-            // Algoritmo de Dijkstra
-            while (visitados.Count < NumVertices)
-            {
-                int verticeAtual = -1;
-                int menorDistancia = int.MaxValue;
-                for (int i = 0; i < NumVertices; i++)
-                {
-                    if (!visitados.Contains(i) && distancias[i] < menorDistancia)
-                    {
-                        verticeAtual = i;
-                        menorDistancia = distancias[i];
-                    }
-                }
-
-                if (verticeAtual == -1)
-                    break;
-
-                visitados.Add(verticeAtual);
-
-                foreach (int adjacente in grafo.GetAdjacentes(verticeAtual))
-                {
-                    int novaDistancia = distancias[verticeAtual] + 1; // Considerando todas as arestas de peso 1
-                    if (novaDistancia < distancias[adjacente])
-                    {
-                        distancias[adjacente] = novaDistancia;
-                    }
-                }
-            }
-
-            // Exibindo distâncias mínimas
-            Console.WriteLine("Distâncias mínimas a partir do vértice " + origem + ":");
-            for (int i = 0; i < NumVertices; i++)
-            {
-                Console.WriteLine("Vértice " + i + ": " + (distancias[i] == int.MaxValue ? "Infinito" : distancias[i].ToString()));
-            }
-        }
-
-        void AlgoritmoJarník()
-        {
-
         }
     }
 }
-
-
-
-
-
-   
-
-     
-
