@@ -8,24 +8,26 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Arthu\\.nuget\\packages\\": {}
+    "C:\\Users\\Lucas\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Arthu\\OneDrive\\Documentos\\PUC - SI\\Algoritmo em Grafos\\Grafos-\\Grafos\\Grafos.csproj",
+      "projectUniqueName": "C:\\Users\\Lucas\\OneDrive\\Área de Trabalho\\Nova pasta\\Grafos\\Grafos.csproj",
       "projectName": "Grafos",
-      "projectPath": "C:\\Users\\Arthu\\OneDrive\\Documentos\\PUC - SI\\Algoritmo em Grafos\\Grafos-\\Grafos\\Grafos.csproj",
-      "packagesPath": "C:\\Users\\Arthu\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Arthu\\OneDrive\\Documentos\\PUC - SI\\Algoritmo em Grafos\\Grafos-\\Grafos\\obj\\",
+      "projectPath": "C:\\Users\\Lucas\\OneDrive\\Área de Trabalho\\Nova pasta\\Grafos\\Grafos.csproj",
+      "packagesPath": "C:\\Users\\Lucas\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Lucas\\OneDrive\\Área de Trabalho\\Nova pasta\\Grafos\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Arthu\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Lucas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -38,11 +40,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -59,30 +56,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[6.0.31, 6.0.31]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[6.0.31, 6.0.31]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[6.0.31, 6.0.31]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[6.0.31, 6.0.31]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.301\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
       }
     }
   }
