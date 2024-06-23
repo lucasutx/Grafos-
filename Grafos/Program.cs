@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 class Program
 {
@@ -39,13 +40,12 @@ class Program
         {
             grafo[i] = new List<Tuple<int, int>>();
         }
+
         // Lista para armazenar as arestas para Kruskal
         List<Tuple<int, int, int>> arestas = new List<Tuple<int, int, int>>();
 
         // Lista para armazenar as arestas de Welsh-Powell
         List<Tuple<int, int>> arestasW = new List<Tuple<int, int>>();
-
-
 
         // Leitura das arestas
         Console.WriteLine("Insira as arestas no formato 'origem destino peso'");
@@ -57,16 +57,13 @@ class Program
             int peso = int.Parse(aresta[2]);
             grafo[origem].Add(new Tuple<int, int>(destino, peso));
 
-
             // Se o algoritmo requer grafo não direcionado, adicionamos também a aresta inversa
             if (algoritmo == 4 || algoritmo == 6 || algoritmo == 7 || algoritmo == 9 || algoritmo == 10 || algoritmo == 11)
             {
                 grafo[destino].Add(new Tuple<int, int>(origem, peso));
                 arestas.Add(new Tuple<int, int, int>(origem, destino, peso));
                 arestasW.Add(new Tuple<int, int>(origem, destino));
-
             }
-            
         }
 
         switch (algoritmo)
@@ -90,39 +87,46 @@ class Program
             case 5:
                 OrdenacaoTopologica(grafo);
                 break;
+
             case 6:
                 AlgoritmoKruskal(arestas, NumVertices);
                 break;
+
             case 7:
                 AlgoritmoFleury(grafo);
                 break;
+
             case 8:
                 AlgoritmoKonigEgervary(grafo, NumVertices);
                 break;
+
             case 9:
-                AlgoritmoGuloso(grafo,NumVertices);
+                AlgoritmoGuloso(grafo, NumVertices);
                 break;
 
             case 10:
-                AlgoritmoWelshPowell(grafo,NumVertices);
+                AlgoritmoWelshPowell(grafo, NumVertices);
                 break;
+
             case 11:
-                //AlgoritmoBrelaz(grafo);
+                AlgoritmoBrelaz(grafo, NumVertices);
                 break;
+
             case 12:
-                //AlgoritmoKosaraju(grafo);
+                AlgoritmoKosaraju(grafo, NumVertices);
                 break;
+
             case 13:
-                //AlgoritmoKahn(grafo);
+                AlgoritmoKahn(grafo, NumVertices);
                 break;
+
             case 14:
-                //AlgoritmoBellman-Ford(grafo);
+                AlgoritmoBellmanFord(arestas, NumVertices, 0);
                 break;
+
             case 15:
-                //AlgoritmoFord-Fulkerson(grafo);
-                break;
-
-
+                //AlgoritmoFordFulkerson(grafo, 0, NumVertices - 1);
+                //break;
 
             default:
                 Console.WriteLine("Insira um Algoritmo válido");
@@ -141,6 +145,7 @@ class Program
             }
         }
     }
+    
     static void DFS(List<Tuple<int, int>>[] grafo, int v, bool[] visitados)
     {
         visitados[v] = true;
@@ -154,6 +159,7 @@ class Program
             }
         }
     }
+    
     static void BuscaLargura(List<Tuple<int, int>>[] grafo)
     {
         bool[] visitados = new bool[grafo.Length];
@@ -183,6 +189,7 @@ class Program
             }
         }
     }
+    
     static void AlgoritmoDijkstra(List<Tuple<int, int>>[] grafo, int origem)
     {
         int n = grafo.Length;
@@ -224,6 +231,7 @@ class Program
             Console.WriteLine("Vértice " + i + ": " + (dist[i] == int.MaxValue ? "Infinito" : dist[i].ToString()));
         }
     }
+    
     static void AlgoritmoJarnikPrim(List<Tuple<int, int>>[] grafo)
     {
         int n = grafo.Length;
@@ -278,6 +286,7 @@ class Program
             Console.WriteLine("Aresta " + pai[i] + " - " + i + " Peso: " + pesoMinimo[i]);
         }
     }
+    
     static void OrdenacaoTopologica(List<Tuple<int, int>>[] grafo)
     {
         int n = grafo.Length;
@@ -334,6 +343,7 @@ class Program
         }
 
     }
+    
     static void AlgoritmoKruskal(List<Tuple<int, int, int>> arestas, int NumVertices)
     {
         // Ordenar arestas pelo peso
@@ -400,6 +410,7 @@ class Program
             Console.WriteLine($"{aresta.Item1} - {aresta.Item2} : {aresta.Item3}");
         }
     }
+    
     static void AlgoritmoFleury(List<Tuple<int, int>>[] grafo)
     {
         // Verificar se o grafo possui um caminho ou ciclo Euleriano
@@ -494,6 +505,7 @@ class Program
         // Começar o Algoritmo de Fleury a partir do vértice inicial
         PrintEulerianPath(startVertex);
     }
+    
     static void AlgoritmoKonigEgervary(List<Tuple<int, int>>[] grafo, int NumVertices)
     {
         // Converter o grafo em uma lista de adjacências simplificada para emparelhamento bipartido
@@ -557,6 +569,7 @@ class Program
         }
         Console.WriteLine("Número máximo de emparelhamentos: " + emparelhamentoMaximo);
     }
+    
     static void AlgoritmoGuloso(List<Tuple<int, int>>[] grafo, int NumVertices)
     {
         // Vetor para armazenar as cores dos vértices
@@ -606,61 +619,328 @@ class Program
             Console.WriteLine($"Vértice {i}: Cor {cores[i]}");
         }
     }
-    static void AlgoritmoWelshPowell(List<Tuple<int, int>>[], int NumVertices)
+    
+    static void AlgoritmoWelshPowell(List<Tuple<int, int>>[] grafo, int NumVertices)
     {
-        // Ordenar arestas pelo peso
-        var arestasOrdenadas = arestas.OrderByDescending(aresta => aresta.Item3).ToList();
+        // Lista para armazenar o grau de cada vértice
+        int[] grau = new int[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            grau[i] = grafo[i].Count;
+        }
 
-        // Inicializar a lista de cores
+        // Ordenar os vértices por grau decrescente
+        int[] verticesOrdenados = Enumerable.Range(0, NumVertices).OrderByDescending(v => grau[v]).ToArray();
+
+        // Array para armazenar as cores dos vértices
         int[] cores = new int[NumVertices];
         for (int i = 0; i < NumVertices; i++)
         {
-            cores[i] = -1; // Inicializa todos os vértices com cor não atribuída
+            cores[i] = -1; // -1 significa que o vértice ainda não foi colorido
         }
 
-        // Atribuir cores
+        // Colorir os vértices
+        int cor = 0;
         for (int i = 0; i < NumVertices; i++)
         {
-            int vertice = arestasOrdenadas[i].Item1;
-            // Verificar cores disponíveis
-            bool[] coresDisponiveis = new bool[NumVertices];
-            for (int j = 0; j < NumVertices; j++)
-                coresDisponiveis[j] = true;
+            int v = verticesOrdenados[i];
 
-            // Considerar cores dos vértices adjacentes
-            foreach (var aresta in arestasOrdenadas)
+            if (cores[v] == -1) // Se o vértice ainda não foi colorido
             {
-                if (aresta.Item1 == vertice && cores[aresta.Item2] != -1)
-                    coresDisponiveis[cores[aresta.Item2]] = false;
-                else if (aresta.Item2 == vertice && cores[aresta.Item1] != -1)
-                    coresDisponiveis[cores[aresta.Item1]] = false;
-            }
+                // Atribuir uma nova cor ao vértice
+                cores[v] = cor;
 
-            // Encontrar a primeira cor disponível
-            int cor;
-            for (cor = 0; cor < NumVertices; cor++)
-            {
-                if (coresDisponiveis[cor])
-                    break;
-            }
+                // Colorir todos os vértices adjacentes que ainda não foram coloridos e que não são adjacentes a vértices da mesma cor
+                for (int j = 0; j < NumVertices; j++)
+                {
+                    int u = verticesOrdenados[j];
 
-            cores[vertice] = cor; // Atribuir a cor encontrada ao vértice
+                    if (cores[u] == -1 && !grafo[v].Any(adj => cores[adj.Item1] == cor))
+                    {
+                        cores[u] = cor;
+                    }
+                }
+
+                // Incrementar a cor para a próxima iteração
+                cor++;
+            }
         }
 
-        // Imprimir a coloração dos vértices
-        Console.WriteLine("Coloração dos vértices após a ordenação de Welsh-Powell:");
+        // Exibir as cores atribuídas a cada vértice
         for (int i = 0; i < NumVertices; i++)
         {
-            Console.WriteLine($"Vértice {i}: Cor {cores[i]}");
+            Console.WriteLine($"Vértice {i} -> Cor {cores[i]}");
         }
     }
+    
+    public static void AlgoritmoBrelaz(List<Tuple<int, int>>[] grafo, int NumVertices)
+    {
+        // Array para armazenar as cores dos vértices
+        int[] cores = new int[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            cores[i] = -1; // -1 significa que o vértice ainda não foi colorido
+        }
+
+        // Array para armazenar a saturação de cada vértice
+        int[] saturacao = new int[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            saturacao[i] = 0; // Iniciar com saturação 0
+        }
+
+        // Função auxiliar para obter a cor disponível mais baixa para um vértice
+        int ObterCorDisponivel(int vertice)
+        {
+            bool[] coresUsadas = new bool[NumVertices];
+            foreach (var adj in grafo[vertice])
+            {
+                if (cores[adj.Item1] != -1)
+                {
+                    coresUsadas[cores[adj.Item1]] = true;
+                }
+            }
+            for (int i = 0; i < NumVertices; i++)
+            {
+                if (!coresUsadas[i])
+                {
+                    return i;
+                }
+            }
+            return NumVertices; // Isso não deve acontecer
+        }
+
+        // Selecionar o primeiro vértice (o de maior grau)
+        int[] grau = new int[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            grau[i] = grafo[i].Count;
+        }
+
+        int verticeInicial = Array.IndexOf(grau, grau.Max());
+        cores[verticeInicial] = 0;
+
+        // Atualizar a saturação dos vértices adjacentes
+        foreach (var adj in grafo[verticeInicial])
+        {
+            saturacao[adj.Item1]++;
+        }
+
+        // Colorir os vértices restantes
+        for (int i = 1; i < NumVertices; i++)
+        {
+            // Selecionar o vértice com maior saturação (em caso de empate, escolher o de maior grau)
+            int verticeSelecionado = -1;
+            int maiorSaturacao = -1;
+            for (int j = 0; j < NumVertices; j++)
+            {
+                if (cores[j] == -1)
+                {
+                    if (saturacao[j] > maiorSaturacao)
+                    {
+                        maiorSaturacao = saturacao[j];
+                        verticeSelecionado = j;
+                    }
+                    else if (saturacao[j] == maiorSaturacao && grau[j] > grau[verticeSelecionado])
+                    {
+                        verticeSelecionado = j;
+                    }
+                }
+            }
+
+            // Atribuir a cor disponível mais baixa ao vértice selecionado
+            int corDisponivel = ObterCorDisponivel(verticeSelecionado);
+            cores[verticeSelecionado] = corDisponivel;
+
+            // Atualizar a saturação dos vértices adjacentes
+            foreach (var adj in grafo[verticeSelecionado])
+            {
+                if (cores[adj.Item1] == -1)
+                {
+                    saturacao[adj.Item1]++;
+                }
+            }
+        }
+
+        // Exibir as cores atribuídas a cada vértice
+        for (int i = 0; i < NumVertices; i++)
+        {
+            Console.WriteLine($"Vértice {i} -> Cor {cores[i]}");
+        }
+    }
+
+    public static void AlgoritmoKosaraju(List<Tuple<int, int>>[] grafo, int NumVertices)
+    {
+        Stack<int> pilha = new Stack<int>();
+        bool[] visitado = new bool[NumVertices];
+
+        // Passo 1: Preencher a pilha com a ordem dos vértices finalizados
+        for (int i = 0; i < NumVertices; i++)
+        {
+            if (!visitado[i])
+            {
+                PreencherOrdem(grafo, i, visitado, pilha);
+            }
+        }
+
+        // Passo 2: Transpor o grafo
+        List<int>[] grafoTransposto = TransporGrafo(grafo, NumVertices);
+
+        // Passo 3: Processar os vértices na ordem dada pela pilha
+        Array.Fill(visitado, false);
+        while (pilha.Count > 0)
+        {
+            int v = pilha.Pop();
+            if (!visitado[v])
+            {
+                List<int> componente = new List<int>();
+                DFS(grafoTransposto, v, visitado, componente);
+                Console.WriteLine("Componente fortemente conectada: " + string.Join(", ", componente));
+            }
+        }
+    }
+    private static void PreencherOrdem(List<Tuple<int, int>>[] grafo, int v, bool[] visitado, Stack<int> pilha)
+    {
+        visitado[v] = true;
+        foreach (var adj in grafo[v])
+        {
+            if (!visitado[adj.Item1])
+            {
+                PreencherOrdem(grafo, adj.Item1, visitado, pilha);
+            }
+        }
+        pilha.Push(v);
+    }
+    private static List<int>[] TransporGrafo(List<Tuple<int, int>>[] grafo, int NumVertices)
+    {
+        List<int>[] grafoTransposto = new List<int>[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            grafoTransposto[i] = new List<int>();
+        }
+        for (int v = 0; v < NumVertices; v++)
+        {
+            foreach (var adj in grafo[v])
+            {
+                grafoTransposto[adj.Item1].Add(v);
+            }
+        }
+        return grafoTransposto;
+    }
+    private static void DFS(List<int>[] grafo, int v, bool[] visitado, List<int> componente)
+    {
+        visitado[v] = true;
+        componente.Add(v);
+        foreach (var adj in grafo[v])
+        {
+            if (!visitado[adj])
+            {
+                DFS(grafo, adj, visitado, componente);
+            }
+        }
+    }
+
+    public static void AlgoritmoKahn(List<Tuple<int, int>>[] grafo, int NumVertices)
+    {
+        int[] grauEntrada = new int[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            foreach (var adj in grafo[i])
+            {
+                grauEntrada[adj.Item1]++;
+            }
+        }
+
+        Queue<int> fila = new Queue<int>();
+        for (int i = 0; i < NumVertices; i++)
+        {
+            if (grauEntrada[i] == 0)
+            {
+                fila.Enqueue(i);
+            }
+        }
+
+        List<int> ordenacao = new List<int>();
+        while (fila.Count > 0)
+        {
+            int v = fila.Dequeue();
+            ordenacao.Add(v);
+
+            foreach (var adj in grafo[v])
+            {
+                grauEntrada[adj.Item1]--;
+                if (grauEntrada[adj.Item1] == 0)
+                {
+                    fila.Enqueue(adj.Item1);
+                }
+            }
+        }
+
+        if (ordenacao.Count == NumVertices)
+        {
+            Console.WriteLine("Ordenação Topológica: " + string.Join(", ", ordenacao));
+        }
+        else
+        {
+            Console.WriteLine("O grafo contém um ciclo, portanto, a ordenação topológica não é possível.");
+        }
+    }
+
+    public static void AlgoritmoBellmanFord(List<Tuple<int, int, int>> arestas, int NumVertices, int origem)
+    {
+        int[] distancia = new int[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            distancia[i] = int.MaxValue;
+        }
+        distancia[origem] = 0;
+
+        for (int i = 0; i < NumVertices - 1; i++)
+        {
+            foreach (var aresta in arestas)
+            {
+                int u = aresta.Item1;
+                int v = aresta.Item2;
+                int peso = aresta.Item3;
+
+                if (distancia[u] != int.MaxValue && distancia[u] + peso < distancia[v])
+                {
+                    distancia[v] = distancia[u] + peso;
+                }
+            }
+        }
+
+        // Verificação de ciclos negativos
+        foreach (var aresta in arestas)
+        {
+            int u = aresta.Item1;
+            int v = aresta.Item2;
+            int peso = aresta.Item3;
+
+            if (distancia[u] != int.MaxValue && distancia[u] + peso < distancia[v])
+            {
+                Console.WriteLine("O grafo contém um ciclo negativo.");
+                return;
+            }
+        }
+
+        Console.WriteLine("Distâncias mínimas a partir do vértice " + origem + ":");
+        for (int i = 0; i < NumVertices; i++)
+        {
+            Console.WriteLine("Vértice " + i + ": " + (distancia[i] == int.MaxValue ? "Infinito" : distancia[i].ToString()));
+        }
+    }
+
+    
+
+    
 }
 
 
 
 
- 
-    
+
+
 
 
 
