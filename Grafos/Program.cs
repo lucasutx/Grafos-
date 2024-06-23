@@ -22,116 +22,144 @@ class Program
         "12. Algoritmo de Kosaraju \n" +
         "13. Algoritmo de Kahn \n" +
         "14. Algoritmo de Bellman-Ford \n" +
-        "15. Algoritmo de Ford-Fulkerson ");
+        "15. Algoritmo de Ford-Fulkerson \n "+
+         "0. Para sair");
 
         int algoritmo = int.Parse(Console.ReadLine());
 
-        // Leitura de arestas e vertices
-        Console.WriteLine("Insira a quantidade de vértices e arestas");
-        string[] numVA = Console.ReadLine().Split(' ');
 
-        // Definição dos arrays
-        int NumVertices = int.Parse(numVA[0]);
-        int NumArestas = int.Parse(numVA[1]);
 
-        // Criação do grafo
-        List<Tuple<int, int>>[] grafo = new List<Tuple<int, int>>[NumVertices];
-        for (int i = 0; i < NumVertices; i++)
+        while(algoritmo != 0)
         {
-            grafo[i] = new List<Tuple<int, int>>();
-        }
+            // Leitura de arestas e vertices
+            Console.WriteLine("Insira a quantidade de vértices e arestas");
+            string[] numVA = Console.ReadLine().Split(' ');
 
-        // Lista para armazenar as arestas para Kruskal
-        List<Tuple<int, int, int>> arestas = new List<Tuple<int, int, int>>();
+            // Definição dos arrays
+            int NumVertices = int.Parse(numVA[0]);
+            int NumArestas = int.Parse(numVA[1]);
 
-        // Lista para armazenar as arestas de Welsh-Powell
-        List<Tuple<int, int>> arestasW = new List<Tuple<int, int>>();
-
-        // Leitura das arestas
-        Console.WriteLine("Insira as arestas no formato 'origem destino peso'");
-        for (int i = 0; i < NumArestas; i++)
-        {
-            string[] aresta = Console.ReadLine().Split(' ');
-            int origem = int.Parse(aresta[0]);
-            int destino = int.Parse(aresta[1]);
-            int peso = int.Parse(aresta[2]);
-            grafo[origem].Add(new Tuple<int, int>(destino, peso));
-
-            // Se o algoritmo requer grafo não direcionado, adicionamos também a aresta inversa
-            if (algoritmo == 4 || algoritmo == 6 || algoritmo == 7 || algoritmo == 9 || algoritmo == 10 || algoritmo == 11)
+            // Criação do grafo
+            List<Tuple<int, int>>[] grafo = new List<Tuple<int, int>>[NumVertices];
+            for (int i = 0; i < NumVertices; i++)
             {
-                grafo[destino].Add(new Tuple<int, int>(origem, peso));
-                arestas.Add(new Tuple<int, int, int>(origem, destino, peso));
-                arestasW.Add(new Tuple<int, int>(origem, destino));
+                grafo[i] = new List<Tuple<int, int>>();
             }
+
+            // Lista para armazenar as arestas para Kruskal
+            List<Tuple<int, int, int>> arestas = new List<Tuple<int, int, int>>();
+
+            // Lista para armazenar as arestas de Welsh-Powell
+            List<Tuple<int, int>> arestasW = new List<Tuple<int, int>>();
+
+            // Leitura das arestas
+            Console.WriteLine("Insira as arestas no formato 'origem destino peso'");
+            for (int i = 0; i < NumArestas; i++)
+            {
+                string[] aresta = Console.ReadLine().Split(' ');
+                int origem = int.Parse(aresta[0]);
+                int destino = int.Parse(aresta[1]);
+                int peso = int.Parse(aresta[2]);
+                grafo[origem].Add(new Tuple<int, int>(destino, peso));
+
+                // Se o algoritmo requer grafo não direcionado, adicionamos também a aresta inversa
+                if (algoritmo == 4 || algoritmo == 6 || algoritmo == 7 || algoritmo == 9 || algoritmo == 10 || algoritmo == 11)
+                {
+                    grafo[destino].Add(new Tuple<int, int>(origem, peso));
+                    arestas.Add(new Tuple<int, int, int>(origem, destino, peso));
+                    arestasW.Add(new Tuple<int, int>(origem, destino));
+                }
+            }
+
+            switch (algoritmo)
+            {
+                case 1:
+                    BuscaProfundidade(grafo);
+                    break;
+
+                case 2:
+                    BuscaLargura(grafo);
+                    break;
+
+                case 3:
+                    AlgoritmoDijkstra(grafo, 0);  // Usar vértice 0 como início
+                    break;
+
+                case 4:
+                    AlgoritmoJarnikPrim(grafo);
+                    break;
+
+                case 5:
+                    OrdenacaoTopologica(grafo);
+                    break;
+
+                case 6:
+                    AlgoritmoKruskal(arestas, NumVertices);
+                    break;
+
+                case 7:
+                    AlgoritmoFleury(grafo);
+                    break;
+
+                case 8:
+                    AlgoritmoKonigEgervary(grafo, NumVertices);
+                    break;
+
+                case 9:
+                    AlgoritmoGuloso(grafo, NumVertices);
+                    break;
+
+                case 10:
+                    AlgoritmoWelshPowell(grafo, NumVertices);
+                    break;
+
+                case 11:
+                    AlgoritmoBrelaz(grafo, NumVertices);
+                    break;
+
+                case 12:
+                    AlgoritmoKosaraju(grafo, NumVertices);
+                    break;
+
+                case 13:
+                    AlgoritmoKahn(grafo, NumVertices);
+                    break;
+
+                case 14:
+                    AlgoritmoBellmanFord(arestas, NumVertices, 0);
+                    break;
+
+                case 15:
+                    AlgoritmoFordFulkerson(grafo, 0, NumVertices - 1);
+                    break;
+
+                default:
+                    Console.WriteLine("Insira um Algoritmo válido");
+                    break;
+            }
+
+            // Escolha do Algoritmo 
+            Console.WriteLine("Digite o Algoritmo desejado:\n" +
+            "1. Busca em Profundidade\n" +
+            "2. Busca em Largura \n" +
+            "3. Algoritmo de Dijkstra \n" +
+            "4. Algoritmo de Jarník-Prim \n" +
+            "5. Ordenação Topológica \n" +
+            "6. Algoritmo de Kruskal \n" +
+            "7. Algoritmo de Fleury \n" +
+            "8. Algoritmo de König-Egerváry \n" +
+            "9. Algoritmo Guloso de Coloração \n" +
+            "10. Algoritmo de Welsh-Powell \n" +
+            "11. Algoritmo de Brélaz \n" +
+            "12. Algoritmo de Kosaraju \n" +
+            "13. Algoritmo de Kahn \n" +
+            "14. Algoritmo de Bellman-Ford \n" +
+            "15. Algoritmo de Ford-Fulkerson \n " +
+             "0. Para sair");
+
+            algoritmo = int.Parse(Console.ReadLine());
         }
-
-        switch (algoritmo)
-        {
-            case 1:
-                BuscaProfundidade(grafo);
-                break;
-
-            case 2:
-                BuscaLargura(grafo);
-                break;
-
-            case 3:
-                AlgoritmoDijkstra(grafo, 0);  // Usar vértice 0 como início
-                break;
-
-            case 4:
-                AlgoritmoJarnikPrim(grafo);
-                break;
-
-            case 5:
-                OrdenacaoTopologica(grafo);
-                break;
-
-            case 6:
-                AlgoritmoKruskal(arestas, NumVertices);
-                break;
-
-            case 7:
-                AlgoritmoFleury(grafo);
-                break;
-
-            case 8:
-                AlgoritmoKonigEgervary(grafo, NumVertices);
-                break;
-
-            case 9:
-                AlgoritmoGuloso(grafo, NumVertices);
-                break;
-
-            case 10:
-                AlgoritmoWelshPowell(grafo, NumVertices);
-                break;
-
-            case 11:
-                AlgoritmoBrelaz(grafo, NumVertices);
-                break;
-
-            case 12:
-                AlgoritmoKosaraju(grafo, NumVertices);
-                break;
-
-            case 13:
-                AlgoritmoKahn(grafo, NumVertices);
-                break;
-
-            case 14:
-                AlgoritmoBellmanFord(arestas, NumVertices, 0);
-                break;
-
-            case 15:
-                //AlgoritmoFordFulkerson(grafo, 0, NumVertices - 1);
-                //break;
-
-            default:
-                Console.WriteLine("Insira um Algoritmo válido");
-                break;
-        }
+        
     }
 
     static void BuscaProfundidade(List<Tuple<int, int>>[] grafo)
@@ -931,9 +959,91 @@ class Program
         }
     }
 
-    
 
-    
+    static void AlgoritmoFordFulkerson(List<Tuple<int, int>>[] grafo, int fonte, int sumidouro)
+    {
+        int numVertices = grafo.Length;
+
+        // Inicializar matriz de capacidades residuais
+        int[,] capacidadeResidual = new int[numVertices, numVertices];
+        foreach (var adjacencias in grafo)
+        {
+            foreach (var adjacencia in adjacencias)
+            {
+                capacidadeResidual[adjacencia.Item1, adjacencias.IndexOf(adjacencia)] = adjacencia.Item2;
+            }
+        }
+
+        // Inicializar vetor para armazenar o caminho de aumento
+        int[] caminhoAumento = new int[numVertices];
+
+        int fluxoMaximo = 0;  // Inicializar o fluxo máximo como 0
+
+        // Enquanto houver um caminho de aumento, aumente o fluxo
+        while (BFS(grafo, capacidadeResidual, fonte, sumidouro, caminhoAumento))
+        {
+            // Encontrar a capacidade residual mínima ao longo do caminho de aumento encontrado pela BFS
+            int fluxoCaminho = int.MaxValue;
+            for (int v = sumidouro; v != fonte; v = caminhoAumento[v])
+            {
+                int u = caminhoAumento[v];
+                fluxoCaminho = Math.Min(fluxoCaminho, capacidadeResidual[u, v]);
+            }
+
+            // Atualizar as capacidades residuais ao longo do caminho e do caminho reverso
+            for (int v = sumidouro; v != fonte; v = caminhoAumento[v])
+            {
+                int u = caminhoAumento[v];
+                capacidadeResidual[u, v] -= fluxoCaminho;
+                capacidadeResidual[v, u] += fluxoCaminho;
+            }
+
+            // Adicionar o fluxo do caminho ao fluxo máximo
+            fluxoMaximo += fluxoCaminho;
+        }
+
+        // Imprimir o fluxo máximo encontrado
+        Console.WriteLine($"Fluxo Máximo: {fluxoMaximo}");
+    }
+
+    // Função auxiliar para encontrar um caminho de aumento usando BFS
+    static bool BFS(List<Tuple<int, int>>[] grafo, int[,] capacidadeResidual, int fonte, int sumidouro, int[] caminhoAumento)
+    {
+        int numVertices = grafo.Length;
+        bool[] visitado = new bool[numVertices];
+        Queue<int> fila = new Queue<int>();
+
+        fila.Enqueue(fonte);
+        visitado[fonte] = true;
+        caminhoAumento[fonte] = -1;
+
+        while (fila.Count > 0)
+        {
+            int u = fila.Dequeue();
+
+            foreach (var adj in grafo[u])
+            {
+                int v = adj.Item1;
+                int capacidade = capacidadeResidual[u, v];
+
+                if (!visitado[v] && capacidade > 0)
+                {
+                    if (v == sumidouro)
+                    {
+                        caminhoAumento[v] = u;
+                        return true;
+                    }
+
+                    fila.Enqueue(v);
+                    caminhoAumento[v] = u;
+                    visitado[v] = true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 }
 
 
