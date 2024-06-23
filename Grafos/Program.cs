@@ -39,6 +39,13 @@ class Program
         {
             grafo[i] = new List<Tuple<int, int>>();
         }
+        // Lista para armazenar as arestas para Kruskal
+        List<Tuple<int, int, int>> arestas = new List<Tuple<int, int, int>>();
+
+        // Lista para armazenar as arestas de Welsh-Powell
+        List<Tuple<int, int>> arestasW = new List<Tuple<int, int>>();
+
+
 
         // Leitura das arestas
         Console.WriteLine("Insira as arestas no formato 'origem destino peso'");
@@ -50,11 +57,16 @@ class Program
             int peso = int.Parse(aresta[2]);
             grafo[origem].Add(new Tuple<int, int>(destino, peso));
 
+
             // Se o algoritmo requer grafo não direcionado, adicionamos também a aresta inversa
             if (algoritmo == 4 || algoritmo == 6 || algoritmo == 7 || algoritmo == 9 || algoritmo == 10 || algoritmo == 11)
             {
                 grafo[destino].Add(new Tuple<int, int>(origem, peso));
+                arestas.Add(new Tuple<int, int, int>(origem, destino, peso));
+                arestasW.Add(new Tuple<int, int>(origem, destino));
+
             }
+            
         }
 
         switch (algoritmo)
@@ -79,19 +91,38 @@ class Program
                 OrdenacaoTopologica(grafo);
                 break;
             case 6:
-                //AlgoritmoKruskal(grafo, NumVertices);
+                AlgoritmoKruskal(arestas, NumVertices);
                 break;
             case 7:
-                //AlgoritmoFleury(grafo);
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-            case 14:
-            case 15:
+                AlgoritmoFleury(grafo);
                 break;
+            case 8:
+                AlgoritmoKonigEgervary(grafo, NumVertices);
+                break;
+            case 9:
+                AlgoritmoGuloso(grafo,NumVertices);
+                break;
+
+            case 10:
+                AlgoritmoWelshPowell(grafo,NumVertices);
+                break;
+            case 11:
+                //AlgoritmoBrelaz(grafo);
+                break;
+            case 12:
+                //AlgoritmoKosaraju(grafo);
+                break;
+            case 13:
+                //AlgoritmoKahn(grafo);
+                break;
+            case 14:
+                //AlgoritmoBellman-Ford(grafo);
+                break;
+            case 15:
+                //AlgoritmoFord-Fulkerson(grafo);
+                break;
+
+
 
             default:
                 Console.WriteLine("Insira um Algoritmo válido");
@@ -303,7 +334,330 @@ class Program
         }
 
     }
+    static void AlgoritmoKruskal(List<Tuple<int, int, int>> arestas, int NumVertices)
+    {
+        // Ordenar arestas pelo peso
+        var arestasOrdenadas = arestas.OrderBy(aresta => aresta.Item3).ToList();
+
+        // Inicializar o Union-Find
+        int[] pai = new int[NumVertices];
+        int[] rank = new int[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            pai[i] = i;
+            rank[i] = 0;
+        }
+
+        // Função para encontrar o pai do elemento
+        int Find(int i)
+        {
+            if (pai[i] != i)
+                pai[i] = Find(pai[i]);
+            return pai[i];
+        }
+
+        // Função para unir dois conjuntos
+        void Union(int x, int y)
+        {
+            int raizX = Find(x);
+            int raizY = Find(y);
+
+            if (raizX != raizY)
+            {
+                if (rank[raizX] > rank[raizY])
+                    pai[raizY] = raizX;
+                else if (rank[raizX] < rank[raizY])
+                    pai[raizX] = raizY;
+                else
+                {
+                    pai[raizY] = raizX;
+                    rank[raizX]++;
+                }
+            }
+        }
+
+        // Lista para armazenar a Árvore Geradora Mínima
+        List<Tuple<int, int, int>> agm = new List<Tuple<int, int, int>>();
+
+        foreach (var aresta in arestasOrdenadas)
+        {
+            int origem = aresta.Item1;
+            int destino = aresta.Item2;
+            int peso = aresta.Item3;
+
+            // Se origem e destino não estão no mesmo conjunto, adiciona a aresta na AGM
+            if (Find(origem) != Find(destino))
+            {
+                agm.Add(aresta);
+                Union(origem, destino);
+            }
+        }
+
+        // Exibir a Árvore Geradora Mínima
+        Console.WriteLine("Arestas da Árvore Geradora Mínima (origem, destino, peso):");
+        foreach (var aresta in agm)
+        {
+            Console.WriteLine($"{aresta.Item1} - {aresta.Item2} : {aresta.Item3}");
+        }
+    }
+    static void AlgoritmoFleury(List<Tuple<int, int>>[] grafo)
+    {
+        // Verificar se o grafo possui um caminho ou ciclo Euleriano
+        int oddDegreeVertices = 0;
+        int startVertex = 0;
+
+        for (int i = 0; i < grafo.Length; i++)
+        {
+            if (grafo[i].Count % 2 != 0)
+            {
+                oddDegreeVertices++;
+                startVertex = i;
+            }
+        }
+
+        // Se o número de vértices de grau ímpar for diferente de 0 ou 2, o grafo não possui caminho ou ciclo Euleriano
+        if (oddDegreeVertices != 0 && oddDegreeVertices != 2)
+        {
+            Console.WriteLine("O grafo não possui caminho ou ciclo Euleriano.");
+            return;
+        }
+
+        // Função auxiliar para verificar se a aresta u-v é uma ponte
+        bool IsBridge(int u, int v)
+        {
+            // Se u-v é a única aresta de u, não é uma ponte
+            if (grafo[u].Count == 1)
+                return false;
+
+            // Contar vértices alcançáveis a partir de u
+            bool[] visited = new bool[grafo.Length];
+            int count1 = DFSCount(u, visited);
+
+            // Remover a aresta u-v e contar vértices alcançáveis novamente
+            RemoveEdge(u, v);
+            visited = new bool[grafo.Length];
+            int count2 = DFSCount(u, visited);
+
+            // Adicionar a aresta u-v de volta
+            AddEdge(u, v);
+
+            // Se count1 for maior que count2, u-v é uma ponte
+            return count1 > count2;
+        }
+
+        // Função auxiliar para contar o número de vértices alcançáveis a partir de v
+        int DFSCount(int v, bool[] visited)
+        {
+            visited[v] = true;
+            int count = 1;
+
+            foreach (var adj in grafo[v])
+            {
+                if (!visited[adj.Item1])
+                    count += DFSCount(adj.Item1, visited);
+            }
+
+            return count;
+        }
+
+        // Função auxiliar para remover a aresta u-v
+        void RemoveEdge(int u, int v)
+        {
+            grafo[u].RemoveAll(adj => adj.Item1 == v);
+            grafo[v].RemoveAll(adj => adj.Item1 == u);
+        }
+
+        // Função auxiliar para adicionar a aresta u-v
+        void AddEdge(int u, int v)
+        {
+            grafo[u].Add(new Tuple<int, int>(v, 0));
+            grafo[v].Add(new Tuple<int, int>(u, 0));
+        }
+
+        // Função para imprimir o circuito ou caminho Euleriano usando o Algoritmo de Fleury
+        void PrintEulerianPath(int u)
+        {
+            foreach (var adj in grafo[u].ToList())
+            {
+                int v = adj.Item1;
+
+                // Se a aresta u-v não é uma ponte ou é a última aresta, percorra-a
+                if (!IsBridge(u, v))
+                {
+                    Console.WriteLine($"{u} - {v}");
+                    RemoveEdge(u, v);
+                    PrintEulerianPath(v);
+                }
+            }
+        }
+
+        // Começar o Algoritmo de Fleury a partir do vértice inicial
+        PrintEulerianPath(startVertex);
+    }
+    static void AlgoritmoKonigEgervary(List<Tuple<int, int>>[] grafo, int NumVertices)
+    {
+        // Converter o grafo em uma lista de adjacências simplificada para emparelhamento bipartido
+        List<int>[] bipartido = new List<int>[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            bipartido[i] = new List<int>();
+            foreach (var adj in grafo[i])
+            {
+                bipartido[i].Add(adj.Item1);
+            }
+        }
+
+        int[] emparelhamentoU = new int[NumVertices];
+        int[] emparelhamentoV = new int[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            emparelhamentoU[i] = -1;
+            emparelhamentoV[i] = -1;
+        }
+
+        // Função de busca para encontrar um caminho aumentante
+        bool BuscaCaminhoAumentante(int u, bool[] visitadosU)
+        {
+            foreach (var v in bipartido[u])
+            {
+                if (!visitadosU[v])
+                {
+                    visitadosU[v] = true;
+
+                    if (emparelhamentoV[v] == -1 || BuscaCaminhoAumentante(emparelhamentoV[v], visitadosU))
+                    {
+                        emparelhamentoU[u] = v;
+                        emparelhamentoV[v] = u;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Encontra o emparelhamento máximo
+        int emparelhamentoMaximo = 0;
+        for (int u = 0; u < NumVertices; u++)
+        {
+            bool[] visitadosU = new bool[NumVertices];
+            if (BuscaCaminhoAumentante(u, visitadosU))
+            {
+                emparelhamentoMaximo++;
+            }
+        }
+
+        // Exibe o emparelhamento máximo
+        Console.WriteLine("Emparelhamento máximo:");
+        for (int u = 0; u < NumVertices; u++)
+        {
+            if (emparelhamentoU[u] != -1)
+            {
+                Console.WriteLine($"{u} - {emparelhamentoU[u]}");
+            }
+        }
+        Console.WriteLine("Número máximo de emparelhamentos: " + emparelhamentoMaximo);
+    }
+    static void AlgoritmoGuloso(List<Tuple<int, int>>[] grafo, int NumVertices)
+    {
+        // Vetor para armazenar as cores dos vértices
+        int[] cores = new int[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            cores[i] = -1; // Inicializa todos os vértices com cor não atribuída
+        }
+
+        // Função para verificar se é seguro atribuir uma cor a um vértice
+        bool PodeAtribuirCor(int vertice, int cor)
+        {
+            foreach (var adjacente in grafo[vertice])
+            {
+                if (cores[adjacente.Item1] == cor)
+                    return false; // Já existe um vértice adjacente com a mesma cor
+            }
+            return true;
+        }
+
+        // Atribuição de cores
+        for (int v = 0; v < NumVertices; v++)
+        {
+            // Verifica cores disponíveis
+            bool[] coresDisponiveis = new bool[NumVertices];
+            for (int i = 0; i < NumVertices; i++)
+                coresDisponiveis[i] = true;
+
+            // Considera cores dos vértices adjacentes
+            foreach (var adjacente in grafo[v])
+                if (cores[adjacente.Item1] != -1)
+                    coresDisponiveis[cores[adjacente.Item1]] = false;
+
+            // Encontra a primeira cor disponível
+            int cor;
+            for (cor = 0; cor < NumVertices; cor++)
+                if (coresDisponiveis[cor])
+                    break;
+
+            cores[v] = cor; // Atribui a cor encontrada ao vértice
+        }
+
+        // Imprime a coloração dos vértices
+        Console.WriteLine("Coloração dos vértices:");
+        for (int i = 0; i < NumVertices; i++)
+        {
+            Console.WriteLine($"Vértice {i}: Cor {cores[i]}");
+        }
+    }
+    static void AlgoritmoWelshPowell(List<Tuple<int, int>>[], int NumVertices)
+    {
+        // Ordenar arestas pelo peso
+        var arestasOrdenadas = arestas.OrderByDescending(aresta => aresta.Item3).ToList();
+
+        // Inicializar a lista de cores
+        int[] cores = new int[NumVertices];
+        for (int i = 0; i < NumVertices; i++)
+        {
+            cores[i] = -1; // Inicializa todos os vértices com cor não atribuída
+        }
+
+        // Atribuir cores
+        for (int i = 0; i < NumVertices; i++)
+        {
+            int vertice = arestasOrdenadas[i].Item1;
+            // Verificar cores disponíveis
+            bool[] coresDisponiveis = new bool[NumVertices];
+            for (int j = 0; j < NumVertices; j++)
+                coresDisponiveis[j] = true;
+
+            // Considerar cores dos vértices adjacentes
+            foreach (var aresta in arestasOrdenadas)
+            {
+                if (aresta.Item1 == vertice && cores[aresta.Item2] != -1)
+                    coresDisponiveis[cores[aresta.Item2]] = false;
+                else if (aresta.Item2 == vertice && cores[aresta.Item1] != -1)
+                    coresDisponiveis[cores[aresta.Item1]] = false;
+            }
+
+            // Encontrar a primeira cor disponível
+            int cor;
+            for (cor = 0; cor < NumVertices; cor++)
+            {
+                if (coresDisponiveis[cor])
+                    break;
+            }
+
+            cores[vertice] = cor; // Atribuir a cor encontrada ao vértice
+        }
+
+        // Imprimir a coloração dos vértices
+        Console.WriteLine("Coloração dos vértices após a ordenação de Welsh-Powell:");
+        for (int i = 0; i < NumVertices; i++)
+        {
+            Console.WriteLine($"Vértice {i}: Cor {cores[i]}");
+        }
+    }
 }
+
+
+
 
  
     
