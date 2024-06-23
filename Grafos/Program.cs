@@ -43,7 +43,7 @@ class Program
             List<Tuple<int, int>>[] grafo = new List<Tuple<int, int>>[NumVertices];
             for (int i = 0; i < NumVertices; i++)
             {
-                grafo[i] = new List<Tuple<int, int>>();
+                grafo[i] = new List<Tuple<int, int>>(100);
             }
 
             // Lista para armazenar as arestas para Kruskal
